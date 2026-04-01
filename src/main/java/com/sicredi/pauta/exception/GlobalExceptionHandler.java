@@ -17,7 +17,6 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // handles @Valid failures — returns a 400 with the first field error message
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleValidationExceptions(MethodArgumentNotValidException ex, WebRequest request) {
@@ -32,7 +31,6 @@ public class GlobalExceptionHandler {
         return new ErrorResponse(ex.getBindingResult().getFieldError().getDefaultMessage(), "VALIDATION_ERROR", description);
     }
 
-    // handles business rule violations thrown as IllegalArgumentException — returns 400
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleIllegalArgumentException(IllegalArgumentException e, WebRequest request) {
@@ -41,7 +39,6 @@ public class GlobalExceptionHandler {
         return new ErrorResponse(e.getMessage(), "VALIDATION_ERROR", description);
     }
 
-    // handles failed login attempts — returns 401
     @ExceptionHandler(AuthenticationException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorResponse handleAuthenticationException(AuthenticationException e, WebRequest request) {
@@ -50,7 +47,6 @@ public class GlobalExceptionHandler {
         return new ErrorResponse(e.getMessage(), "AUTHENTICATION_ERROR", description);
     }
 
-    // catch-all for unexpected errors — returns 500
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleGenericException(Exception e, WebRequest request) {
