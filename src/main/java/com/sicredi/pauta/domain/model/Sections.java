@@ -1,11 +1,8 @@
 package com.sicredi.pauta.domain.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,7 +27,7 @@ import lombok.NoArgsConstructor;
 )
 public class Sections {
     @Id
-    @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, length = 100)
@@ -43,6 +40,6 @@ public class Sections {
     private Integer expiration;
     
     @Column(name = "start_at", nullable = false)
-    private String startAt;
+    private LocalDateTime startAt;
     
 }
