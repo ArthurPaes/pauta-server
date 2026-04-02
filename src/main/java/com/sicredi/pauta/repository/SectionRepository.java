@@ -27,7 +27,7 @@ public interface SectionRepository extends JpaRepository<Sections, Long> {
             "(CASE WHEN EXISTS (SELECT 1 FROM votes v WHERE v.section_id = s.id AND v.user_id = :user_id) THEN true ELSE false END) as hasVoted, " +
 
             // returns true if the current time is past start_at + expiration minutes (session closed)
-            "(CASE WHEN NOW() > DATEADD('MINUTE', s.expiration, s.start_at) THEN true ELSE false END) as isExpired " +
+            "(CASE WHEN NOW() > (s.start_at + (s.expiration * INTERVAL '1 minute')) THEN true ELSE false END) as isExpired " +
 
             "FROM sections s", nativeQuery = true)
     List<SectionWithVotesCount> findAllWithVotesCount(@Param("user_id") Long user_id);

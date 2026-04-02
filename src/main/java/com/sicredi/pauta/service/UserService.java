@@ -21,18 +21,20 @@ public class UserService {
     public UserResponseDTO createUser(UserDTO userDTO) {
         log.info("Criando um novo usuário com o email: {}", userDTO.email());
 
+        String cpf = userDTO.cpf().replaceAll("\\D", "");
+
         if (userRepository.findByEmail(userDTO.email()) != null) {
             log.warn("Email já cadastrado: {}", userDTO.email());
             throw new IllegalArgumentException("Email já cadastrado");
         }
-        if (userRepository.findByCpf(userDTO.cpf()) != null) {
-            log.warn("CPF já cadastrado: {}", userDTO.cpf());
+        if (userRepository.findByCpf(cpf) != null) {
+            log.warn("CPF já cadastrado: {}", cpf);
             throw new IllegalArgumentException("CPF já cadastrado");
         }
 
         Users user = new Users();
         user.setName(userDTO.name());
-        user.setCpf(userDTO.cpf());
+        user.setCpf(cpf);
         user.setEmail(userDTO.email());
         user.setPassword(BcryptUtils.encryptPassword(userDTO.password()));
 
