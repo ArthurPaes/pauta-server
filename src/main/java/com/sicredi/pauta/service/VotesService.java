@@ -25,8 +25,10 @@ public class VotesService {
         log.info("Processando voto. Usuário: {}, Seção: {}, Voto: {}",
                 voteDTO.userId(), voteDTO.sectionId(), voteDTO.vote());
 
+        //seção existe e não expirou
         validateSection(voteDTO.sectionId());
 
+        //Cpf é valido - simulação
         if (!isValidCPF()) {
             log.warn("CPF inválido para usuário: {}", voteDTO.userId());
             Votes rejectedVote = new Votes();
@@ -37,6 +39,7 @@ public class VotesService {
             return rejectedVote;
         }
 
+        //Voto não é duplicado
         votesRepository.findByUserIdAndSectionId(voteDTO.userId(), voteDTO.sectionId())
                 .ifPresent(v -> {
                     log.warn("Voto duplicado. Usuário: {}, Seção: {}", voteDTO.userId(), voteDTO.sectionId());
