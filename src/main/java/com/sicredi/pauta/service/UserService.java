@@ -23,6 +23,11 @@ public class UserService {
 
         String cpf = userDTO.cpf().replaceAll("\\D", "");
 
+        if (!isValidCpf(cpf)) {
+            log.warn("CPF inválido: {}", cpf);
+            throw new IllegalArgumentException("CPF inválido");
+        }
+
         if (userRepository.findByEmail(userDTO.email()) != null) {
             log.warn("Email já cadastrado: {}", userDTO.email());
             throw new IllegalArgumentException("Email já cadastrado");
@@ -72,6 +77,24 @@ public class UserService {
         UserResponseDTO user = findUser(userBody.email());
         log.info("Login realizado com sucesso para o email: {}", userBody.email());
         return user;
+    }
+
+    private boolean isValidCpf(String cpf) {
+        if (cpf == null || cpf.length() != 11) return false;
+        if (cpf.chars().distinct().count() == 1) return false;
+
+        int sum = 0;
+        for (int i = 0; i < 9; i++) sum += (cpf.charAt(i) - '0') * (10 - i);
+        int first = 11 - (sum % 11);
+        if (first >= 10) first = 0;
+        if (first != (cpf.charAt(9) - '0')) return false;
+
+        sum = 0;
+        for (int i = 0; i < 10; i++) sum += (cpf.charAt(i) - '0') * (11 - i);
+        int second = 11 - (sum % 11);
+        if (second >= 10) second = 0;
+
+        return second == (cpf.charAt(10) - '0');
     }
 
 }
