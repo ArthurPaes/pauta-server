@@ -1,79 +1,45 @@
 services:
 
-  # ============================================================
-  # SERVICE 1: The Spring Boot API (our pauta-server)
-  # ============================================================
   api:
-    # Build the image using the Dockerfile in this same folder
     build:
       context: .
       dockerfile: Dockerfile
-    # Map host port 8081 → container port 8081
-    # So you access the API at http://localhost:8081
     ports:
       - "8081:8081"
-    # Override application.properties values with environment
-    # variables. Spring Boot automatically picks these up.
-    # The key difference: the DB host is "db" (the service name
-    # below), NOT "localhost", because inside Docker each
-    # service is a separate machine on a virtual network.
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/pauta_db
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=password
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-    # Don't start the API until PostgreSQL is healthy.
-    # Without this, the API would crash on startup because
-    # it tries to connect to a database that isn't ready yet.
     depends_on:
       db:
         condition: service_healthy
-    # Connect to the shared network so api can talk to db
     networks:
       - pauta-network
 
-  # ============================================================
-  # SERVICE 2: PostgreSQL database
-  # ============================================================
   db:
-    # Use the official PostgreSQL Alpine image (small and fast)
     image: postgres:alpine
     container_name: pauta-postgres
-    # Restart automatically if it crashes
     restart: always
-    # Configure the database credentials and name.
-    # These create the database and user on first startup.
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
       POSTGRES_DB: pauta_db
-    # Map host port 5432 → container port 5432
-    # So you can also connect from your machine (e.g. pgAdmin)
     ports:
       - "5432:5432"
-    # Check if PostgreSQL is ready to accept connections.
-    # The API service waits for this check to pass before starting.
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
       timeout: 5s
       retries: 5
-    # Persist data so it survives container restarts.
-    # Without this, all data is lost every time you stop the container.
     volumes:
       - pgdata:/var/lib/postgresql/data
     networks:
       - pauta-network
 
-# ============================================================
-# NAMED VOLUME: persists database data on your machine
-# ============================================================
 volumes:
   pgdata:
 
-# ============================================================
-# NETWORK: lets the api and db containers find each other
-# ============================================================
 networks:
   pauta-network:
     driver: bridge
