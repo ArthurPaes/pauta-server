@@ -1,3 +1,46 @@
+## Setup
+
+> Make sure you have Git and Docker installed.
+
+[Docker](https://docs.docker.com/engine/install/)
+
+[Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
+
+## Running the project
+
+Clone the repository:
+
+```shell
+git clone https://github.com/ArthurPaes/pauta-server.git
+cd pauta-server
+```
+
+Build and start everything with Docker:
+
+```shell
+docker compose up --build
+```
+
+It may take a few minutes on the first run. Once done, the API will be available at:
+
+**http://localhost:8081**
+
+## Running tests
+
+```shell
+mvn test
+```
+
+## Main tools used
+
+- [Java 17](https://www.java.com/en/)
+- [Spring Boot 3](https://github.com/spring-projects/spring-boot)
+- [Hibernate](https://github.com/hibernate)
+- [PostgreSQL](https://github.com/postgres/postgres)
+- [Docker](https://www.docker.com/)
+
+---
+
 # Votação
 
 ## Objetivo
