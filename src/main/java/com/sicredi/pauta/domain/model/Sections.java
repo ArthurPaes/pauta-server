@@ -3,6 +3,8 @@ package com.sicredi.pauta.domain.model;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -41,5 +43,12 @@ public class Sections {
     
     @Column(name = "start_at", nullable = false)
     private LocalDateTime startAt;
-    
+
+    @Column(name = "owner_id")
+    private Long ownerId;
+
+    @ElementCollection
+    @CollectionTable(name = "section_users", joinColumns = @JoinColumn(name = "section_id"))
+    @Column(name = "user_id")
+    private Set<Long> allowedUserIds = new HashSet<>();
 }

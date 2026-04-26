@@ -53,4 +53,7 @@ public interface SectionWithVotesCount {
 
     @Schema(description = "Se a pauta está expirada", example = "false")
     Boolean getIsExpired();
+
+    @Schema(description = "ID do criador da pauta", example = "1")
+    Long getOwnerId();
 }
