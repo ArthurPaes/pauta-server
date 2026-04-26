@@ -2,6 +2,7 @@ package com.sicredi.pauta.service;
 
 import com.sicredi.pauta.domain.dto.UserDTO;
 import com.sicredi.pauta.domain.dto.UserResponseDTO;
+import java.util.List;
 import com.sicredi.pauta.domain.interfaces.UserLoginRequest;
 import com.sicredi.pauta.domain.model.Users;
 import com.sicredi.pauta.exception.AuthenticationException;
@@ -69,6 +70,13 @@ public class UserService {
         log.debug("Buscando usuário pelo email: {}", email);
         Users user = userRepository.findByEmail(email);
         return user != null ? new UserResponseDTO(user.getId(), user.getName(), user.getCpf(), user.getEmail()) : null;
+    }
+
+    public List<UserResponseDTO> getAllUsers(Long excludeId) {
+        return userRepository.findAll().stream()
+            .filter(u -> excludeId == null || !u.getId().equals(excludeId))
+            .map(u -> new UserResponseDTO(u.getId(), u.getName(), u.getCpf(), u.getEmail()))
+            .toList();
     }
 
     public UserResponseDTO login(UserLoginRequest userBody) {
